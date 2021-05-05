@@ -3,7 +3,8 @@ UnionPei - 非官方银联支付（UnionPay）SDK，使用MIT协议。
 免责声明
 
 本Gem对以下非官方代码进行封装和改造：
-https://open.unionpay.com/tjweb/support/faq/mchlist?id=38，代码仅供参考学习，生产环境请自行封装代码。
+https://open.unionpay.com/tjweb/support/faq/mchlist?id=38
+代码仅供参考学习，生产环境请自行封装代码。
 
 参考文档
 
