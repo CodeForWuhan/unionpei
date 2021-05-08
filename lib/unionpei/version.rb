@@ -2,8 +2,8 @@
 
 module UnionPei
   class Version
-    def self.to_string
-      "0.0.2"
+    def self.to_str
+      "0.0.3"
     end
   end
 end
