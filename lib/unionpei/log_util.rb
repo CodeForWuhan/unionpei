@@ -42,7 +42,7 @@ module UnionPei
                            Logger::UNKNOWN
                        end
       end
-      p = LogUtil.parse_caller(caller(0)[2]) #可能有多线程问题？我才不管哼
+      p = LogUtil.parse_caller(caller(0)[2])
       @@logger.progname = p[0].to_s + ":" + p[1].to_s
       @@logger
     end

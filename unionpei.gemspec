@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'unionpei'
-  s.version     = '0.0.3'
+  s.version     = '1.0.0'
   s.summary     = "An unofficial unionpay gem"
   s.description = "An unofficial unionpay gem"
   s.authors     = ["Shuang"]
