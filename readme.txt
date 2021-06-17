@@ -15,3 +15,11 @@ API文档：https://open.unionpay.com/tjweb/acproduct/APIList?apiservId=448&acpA
 SDK下载：https://open.unionpay.com/tjweb/support/faq/mchlist?id=38
 测试卡信息：https://open.unionpay.com/tjweb/support/faq/mchlist?id=4
 B2B：https://open.unionpay.com/tjweb/acproduct/list?apiSvcId=452&index=999
+
+快速开始（rails）
+
+class PaymentsController < ApplicationController
+  def union_pay
+    render html: UnionPei::Payment.b2c.html_safe
+  end
+end

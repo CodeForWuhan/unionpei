@@ -3,7 +3,7 @@
 module UnionPei
   class Version
     def self.to_str
-      "0.0.5"
+      "1.0.0"
     end
   end
 end
