@@ -17,7 +17,6 @@ module UnionPei
 
       path = File.dirname(__FILE__)
       ini = IniParse.parse(File.read("#{path}/acp_sdk.ini").force_encoding("UTF-8"))
-      puts 'load config: ' + "#{path}/acp_sdk.ini"
 
       @frontTransUrl = ini["acpsdk"]["acpsdk.frontTransUrl"]
       @singleQueryUrl = ini["acpsdk"]["acpsdk.singleQueryUrl"]
