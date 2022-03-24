@@ -17,7 +17,6 @@ module UnionPei
 
     def LogUtil.getLogger
       if !@@logger
-        puts "init LogUtil"
         if SDKConfig.instance.logFilePath.nil?
           @@logger = Logger.new(STDOUT)
         else
