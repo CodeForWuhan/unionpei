@@ -61,6 +61,28 @@ module UnionPei
         url = UnionPei::SDKConfig.instance.frontTransUrl
         UnionPei::AcpService.createAutoFormHtml(req, url)
       end
+
+      @@default_trans_req = {
+        "version"=>UnionPei::SDKConfig.instance.version,
+        "encoding"=>UnionPei::SDKConfig.instance.encoding,
+        "bizType"=>"000000",
+        "txnTime"=>DateTime.parse(Time.now.to_s).strftime("%Y%m%d%H%M%S").to_s,
+        "txnType"=>"00",
+        "txnSubType"=>"00",
+        "accessType"=>"0",
+        "signMethod"=>UnionPei::SDKConfig.instance.signMethod,
+        "merId"=>"777290058189920",
+        "orderId"=>DateTime.parse(Time.now.to_s).strftime("%Y%m%d%H%M%S").to_s,
+      }
+
+      # query single transaction info
+      # doc https://open.unionpay.com/tjweb/acproduct/APIList?acpAPIId=757&apiservId=448&version=V2.2&bussType=0
+      def query_trans(req=@@default_trans_req)
+        req = @@default_trans_req.merge(req)
+        UnionPei::AcpService.sign(req)
+        url = UnionPei::SDKConfig.instance.singleQueryUrl
+        UnionPei::AcpService.post(req, url)
+      end
     end
   end
 end
