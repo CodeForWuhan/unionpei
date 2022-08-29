@@ -1,37 +1,31 @@
-# coding: utf-8
+# frozen_string_literal: true
 
 require 'openssl'
 require 'base64'
 require_relative 'log_util'
 require_relative 'sdk_config'
 
-
 module UnionPei
-  UNIONPAY_CNNAME = "中国银联股份有限公司"
+  UNIONPAY_CNNAME = '中国银联股份有限公司'
 
   class Cert
     attr_accessor :cert, :certId, :key
-    @certId
-    @key
-    @cert
   end
 
   class CertUtil
-
     @@signCerts = {}
     @@encryptCert = {}
-    @@verifyCerts = {} #5.0.0验签证书，key是certId
-    @@verifyCerts5_1_0 = {} #5.1.0验签证书，key是base64的证书内容
+    @@verifyCerts = {} # 5.0.0验签证书，key是certId
+    @@verifyCerts5_1_0 = {} # 5.1.0验签证书，key是base64的证书内容
     @@middleCert = nil
     @@rootCert = nil
 
-    private
-    def CertUtil.initSignCert(certPath, certPwd)
+    def self.initSignCert(certPath, certPwd)
       if !certPath || !certPwd
-        LogUtil.info("signCertPath or signCertPwd is none, exit initSignCert")
+        LogUtil.info('signCertPath or signCertPwd is none, exit initSignCert')
         return
       end
-      LogUtil.info("读取签名证书……")
+      LogUtil.info('读取签名证书……')
       cert = Cert.new
       file = IO.binread(certPath)
       p12 = OpenSSL::PKCS12.new(file, certPwd)
@@ -39,89 +33,76 @@ module UnionPei
       cert.cert = p12.certificate
       cert.key = p12.key
       @@signCerts[certPath] = cert
-      LogUtil.info("签名证书读取成功，序列号：" + cert.certId)
+      LogUtil.info("签名证书读取成功，序列号：#{cert.certId}")
     end
 
-    def CertUtil.initEncryptCert(certPath=SDKConfig.instance.encryptCertPath)
-        if !certPath
-          LogUtil.info("encryptCertPath is none, exit initEncryptCert")
-          return
-        end
-        LogUtil.info("读取加密证书……")
-        cert = Cert.new
-        file = IO.binread(certPath)
-        x509Cert = OpenSSL::X509::Certificate.new(file)
-        cert.cert = x509Cert
-        cert.certId = x509Cert.serial.to_s
-        cert.key = x509Cert.public_key
-        @@encryptCert[certPath] = cert
-        LogUtil.info("加密证书读取成功，序列号：" + cert.certId)
+    def self.initEncryptCert(certPath = SDKConfig.instance.encryptCertPath)
+      unless certPath
+        LogUtil.info('encryptCertPath is none, exit initEncryptCert')
+        return
+      end
+      LogUtil.info('读取加密证书……')
+      cert = Cert.new
+      file = IO.binread(certPath)
+      x509Cert = OpenSSL::X509::Certificate.new(file)
+      cert.cert = x509Cert
+      cert.certId = x509Cert.serial.to_s
+      cert.key = x509Cert.public_key
+      @@encryptCert[certPath] = cert
+      LogUtil.info("加密证书读取成功，序列号：#{cert.certId}")
     end
 
-    def CertUtil.initRootCert()
-      if @@rootCert
+    def self.initRootCert
+      return if @@rootCert
+
+      unless SDKConfig.instance.rootCertPath
+        LogUtil.info('rootCertPath is none, exit initRootCert')
         return
       end
-      if !SDKConfig.instance.rootCertPath
-        LogUtil.info("rootCertPath is none, exit initRootCert")
-        return
-      end
-      LogUtil.info("start initRootCert")
+      LogUtil.info('start initRootCert')
       file = IO.binread(SDKConfig.instance.rootCertPath)
       x509Cert = OpenSSL::X509::Certificate.new(file)
       @@rootCert = x509Cert
-      LogUtil.info("initRootCert succeed")
+      LogUtil.info('initRootCert succeed')
     end
 
-    def CertUtil.initMiddleCert()
-      if @@middleCert
+    def self.initMiddleCert
+      return if @@middleCert
+
+      unless SDKConfig.instance.middleCertPath
+        LogUtil.info('middleCertPath is none, exit initMiddleCert')
         return
       end
-      if !SDKConfig.instance.middleCertPath
-        LogUtil.info("middleCertPath is none, exit initMiddleCert")
-        return
-      end
-      LogUtil.info("start initMiddleCert")
+      LogUtil.info('start initMiddleCert')
       file = IO.binread(SDKConfig.instance.middleCertPath)
       x509Cert = OpenSSL::X509::Certificate.new(file)
       @@middleCert = x509Cert
-      LogUtil.info("initMiddleCert succeed")
+      LogUtil.info('initMiddleCert succeed')
     end
 
-    public
-    def CertUtil.getSignPriKey(certPath=SDKConfig.instance.signCertPath, certPwd=SDKConfig.instance.signCertPwd)
-      if !@@signCerts[certPath]
-        CertUtil.initSignCert(certPath, certPwd)
-      end
+    def self.getSignPriKey(certPath = SDKConfig.instance.signCertPath, certPwd = SDKConfig.instance.signCertPwd)
+      CertUtil.initSignCert(certPath, certPwd) unless @@signCerts[certPath]
       @@signCerts[certPath].key
     end
 
-    def CertUtil.getSignCertId(certPath=SDKConfig.instance.signCertPath, certPwd=SDKConfig.instance.signCertPwd)
-      if !@@signCerts[certPath]
-        CertUtil.initSignCert(certPath, certPwd)
-      end
+    def self.getSignCertId(certPath = SDKConfig.instance.signCertPath, certPwd = SDKConfig.instance.signCertPwd)
+      CertUtil.initSignCert(certPath, certPwd) unless @@signCerts[certPath]
       @@signCerts[certPath].certId
     end
 
-    def CertUtil.getEncryptKey(certPath=SDKConfig.instance.encryptCertPath)
-      if !@@encryptCert[certPath]
-        CertUtil.initEncryptCert(certPath)
-      end
+    def self.getEncryptKey(certPath = SDKConfig.instance.encryptCertPath)
+      CertUtil.initEncryptCert(certPath) unless @@encryptCert[certPath]
       @@encryptCert[certPath].key
     end
 
-    def CertUtil.getEncryptCertId(certPath=SDKConfig.instance.encryptCertPath)
-      if !@@encryptCert[certPath]
-        CertUtil.initEncryptCert(certPath)
-      end
+    def self.getEncryptCertId(certPath = SDKConfig.instance.encryptCertPath)
+      CertUtil.initEncryptCert(certPath) unless @@encryptCert[certPath]
       @@encryptCert[certPath].certId
     end
 
-    def CertUtil.verifyAndGetVerifyKey(certBase64String)
+    def self.verifyAndGetVerifyKey(certBase64String)
+      return @@verifyCerts5_1_0[certBase64String].key if @@verifyCerts5_1_0[certBase64String]
 
-      if @@verifyCerts5_1_0[certBase64String]
-        return @@verifyCerts5_1_0[certBase64String].key
-      end
       initMiddleCert
       initRootCert
 
@@ -137,31 +118,31 @@ module UnionPei
       store.add_cert(x509Cert)
       store.add_cert(@@middleCert)
       store.add_cert(@@rootCert)
-      if !store.verify(x509Cert)
-        LogUtil.error("validate signPubKeyCert by cert chain failed, error=" + store.error + ", error string=" + store.error_string)
+      unless store.verify(x509Cert)
+        LogUtil.error("validate signPubKeyCert by cert chain failed, error=#{store.error}, error string=#{store.error_string}")
         return nil
       end
 
       sSubject = x509Cert.subject.to_s
-      ss = sSubject.split("@")
+      ss = sSubject.split('@')
       if ss.length <= 2
-        LogUtil.error("error sSubject: " + sSubject)
+        LogUtil.error("error sSubject: #{sSubject}")
         return nil
       end
-      cn = ss[2];
+      cn = ss[2]
       if SDKConfig.instance.ifValidateCNName
         if UNIONPAY_CNNAME != cn
-          LogUtil.error("cer owner is not CUP:" + cn)
+          LogUtil.error("cer owner is not CUP:#{cn}")
           return nil
-        elsif UNIONPAY_CNNAME != cn and cn != "00040000:SIGN" #测试环境目前是00040000:SIGN
-          LogUtil.error("cer owner is not CUP:" + cn)
+        elsif (UNIONPAY_CNNAME != cn) && (cn != '00040000:SIGN') # 测试环境目前是00040000:SIGN
+          LogUtil.error("cer owner is not CUP:#{cn}")
           return nil
         end
       end
 
-      LogUtil.info("validate signPubKeyCert by cert succeed: " + certBase64String)
-      @@verifyCerts5_1_0[certBase64String] = cert;
-      return @@verifyCerts5_1_0[certBase64String].key
+      LogUtil.info("validate signPubKeyCert by cert succeed: #{certBase64String}")
+      @@verifyCerts5_1_0[certBase64String] = cert
+      @@verifyCerts5_1_0[certBase64String].key
 
       # 用bc的jar用中级证书验证可以单独验时间，然后再用中级证书验一下，但为了和谐统一，目前改store验证书链验证了。
       # if Time.new<x509Cert.not_before or Time.new>x509Cert.not_after
@@ -176,19 +157,17 @@ module UnionPei
       # end
     end
 
-    def CertUtil.getDecryptPriKey(certPath=SDKConfig.instance.signCertPath, certPwd=SDKConfig.instance.signCertPwd)
-      if !@@signCerts[certPath]
-        CertUtil.initSignCert(certPath, certPwd)
-      end
+    def self.getDecryptPriKey(certPath = SDKConfig.instance.signCertPath, certPwd = SDKConfig.instance.signCertPwd)
+      CertUtil.initSignCert(certPath, certPwd) unless @@signCerts[certPath]
       @@signCerts[certPath].key
     end
 
-    def CertUtil.resetEncryptCertPublicKey()
+    def self.resetEncryptCertPublicKey
       @@encryptCert = {}
       CertUtil.initEncryptCert
     end
 
-    def CertUtil.getX509Cert(strCert)
+    def self.getX509Cert(strCert)
       OpenSSL::X509::Certificate.new(strCert)
     end
   end

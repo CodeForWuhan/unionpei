@@ -1,4 +1,4 @@
-# coding: utf-8
+# frozen_string_literal: true
 
 require 'singleton'
 require 'logger'
@@ -8,74 +8,68 @@ require_relative 'sdk_config'
 
 module UnionPei
   class LogUtil
-
     @@logger = nil
 
     private_class_method :new
 
-    private
-
-    def LogUtil.getLogger
-      if !@@logger
-        if SDKConfig.instance.logFilePath.nil?
-          @@logger = Logger.new(STDOUT)
-        else
-          @@logger = Logger.new(SDKConfig.instance.logFilePath)
-        end
+    def self.getLogger
+      unless @@logger
+        @@logger = if SDKConfig.instance.logFilePath.nil?
+                     Logger.new($stdout)
+                   else
+                     Logger.new(SDKConfig.instance.logFilePath)
+                   end
         @@logger.datetime_format = '%Y-%m-%d %H:%M:%S'
         @@logger.formatter = proc do |severity, datetime, progname, msg|
           "#{datetime} [#{severity}] #{progname}: #{msg}\n"
         end
         @@logger.level = case SDKConfig.instance.logLevel.upcase
-                         when 'INFO' then
+                         when 'INFO'
                            Logger::INFO
-                         when 'DEBUG' then
+                         when 'DEBUG'
                            Logger::DEBUG
-                         when 'WARN' then
+                         when 'WARN'
                            Logger::WARN
-                         when 'ERROR' then
+                         when 'ERROR'
                            Logger::ERROR
-                         when 'FATAL' then
+                         when 'FATAL'
                            Logger::FATAL
                          else
                            Logger::UNKNOWN
-                       end
+                         end
       end
       p = LogUtil.parse_caller(caller(0)[2])
-      @@logger.progname = p[0].to_s + ":" + p[1].to_s
+      @@logger.progname = "#{p[0]}:#{p[1]}"
       @@logger
     end
 
-    def LogUtil.parse_caller(at)
+    def self.parse_caller(at)
       if /^(.+?):(\d+)(?::in `(.*)')?/ =~ at
-        file = $1
-        line = $2.to_i
-        method = $3
+        file = Regexp.last_match(1)
+        line = Regexp.last_match(2).to_i
+        method = Regexp.last_match(3)
         [file, line, method]
       end
     end
 
-    public
-
-    def LogUtil.info(msg)
+    def self.info(msg)
       LogUtil.getLogger.info(msg)
     end
 
-    def LogUtil.debug(msg)
+    def self.debug(msg)
       LogUtil.getLogger.debug(msg)
     end
 
-    def LogUtil.warn(msg)
+    def self.warn(msg)
       LogUtil.getLogger.warn(msg)
     end
 
-    def LogUtil.error(msg)
+    def self.error(msg)
       LogUtil.getLogger.error(msg)
     end
 
-    def LogUtil.fatal(msg)
+    def self.fatal(msg)
       LogUtil.getLogger.fatal(msg)
     end
-
   end
 end

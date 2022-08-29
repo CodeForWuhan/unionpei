@@ -1,4 +1,4 @@
-# coding: utf-8
+# frozen_string_literal: true
 
 require 'iniparse'
 require 'singleton'
@@ -14,62 +14,62 @@ module UnionPei
                 :encoding, :secureKey, :logFilePath, :logLevel
 
     def initialize
+      ini = parse_acpsdk
+      acpsdk = ini['acpsdk']
 
-      path = File.dirname(__FILE__)
-      ini = IniParse.parse(File.read("#{path}/acp_sdk.ini").force_encoding("UTF-8"))
+      @frontTransUrl = acpsdk['acpsdk.frontTransUrl']
+      @singleQueryUrl = acpsdk['acpsdk.singleQueryUrl']
+      @backTransUrl = acpsdk['acpsdk.backTransUrl']
+      @batchTransUrl = acpsdk['acpsdk.batchTransUrl']
+      @fileTransUrl = acpsdk['acpsdk.fileTransUrl']
+      @appTransUrl = acpsdk['acpsdk.appTransUrl']
+      @cardTransUrl = acpsdk['acpsdk.cardTransUrl']
 
-      @frontTransUrl = ini["acpsdk"]["acpsdk.frontTransUrl"]
-      @singleQueryUrl = ini["acpsdk"]["acpsdk.singleQueryUrl"]
-      @backTransUrl = ini["acpsdk"]["acpsdk.backTransUrl"]
-      @batchTransUrl = ini["acpsdk"]["acpsdk.batchTransUrl"]
-      @fileTransUrl = ini["acpsdk"]["acpsdk.fileTransUrl"]
-      @appTransUrl = ini["acpsdk"]["acpsdk.appTransUrl"]
-      @cardTransUrl = ini["acpsdk"]["acpsdk.cardTransUrl"]
+      @jfFrontTransUrl = acpsdk['acpsdk.jfFrontTransUrl']
+      @jfSingleQueryUrl = acpsdk['acpsdk.jfSingleQueryUrl']
+      @jfBackTransUrl = acpsdk['acpsdk.jfBackTransUrl']
+      @jfCardTransUrl = acpsdk['acpsdk.jfCardTransUrl']
+      @jfAppTransUrl = acpsdk['acpsdk.jfAppTransUrl']
 
-      @jfFrontTransUrl = ini["acpsdk"]["acpsdk.jfFrontTransUrl"]
-      @jfSingleQueryUrl = ini["acpsdk"]["acpsdk.jfSingleQueryUrl"]
-      @jfBackTransUrl = ini["acpsdk"]["acpsdk.jfBackTransUrl"]
-      @jfCardTransUrl = ini["acpsdk"]["acpsdk.jfCardTransUrl"]
-      @jfAppTransUrl = ini["acpsdk"]["acpsdk.jfAppTransUrl"]
+      @qrcBackTransUrl = acpsdk['acpsdk.qrcBackTransUrl']
+      @qrcB2cIssBackTransUrl = acpsdk['acpsdk.qrcB2cIssBackTransUrl']
+      @qrcB2cMerBackTransUrl = acpsdk['acpsdk.qrcB2cMerBackTransUrl']
 
-      @qrcBackTransUrl = ini["acpsdk"]["acpsdk.qrcBackTransUrl"]
-      @qrcB2cIssBackTransUrl = ini["acpsdk"]["acpsdk.qrcB2cIssBackTransUrl"]
-      @qrcB2cMerBackTransUrl = ini["acpsdk"]["acpsdk.qrcB2cMerBackTransUrl"]
+      @signMethod = acpsdk['acpsdk.signMethod']
+      @signMethod = @signMethod.to_s unless @signMethod.nil?
+      @version = acpsdk['acpsdk.version']
+      @version = '5.0.0' if @version.nil?
 
-      @signMethod = ini["acpsdk"]["acpsdk.signMethod"]
-      @signMethod = @signMethod.to_s if !@signMethod.nil?
-      @version = ini["acpsdk"]["acpsdk.version"]
-      @version = "5.0.0" if @version.nil?
-
-      @ifValidateCNName = ini["acpsdk"]["acpsdk.ifValidateCNName"]
+      @ifValidateCNName = acpsdk['acpsdk.ifValidateCNName']
       @ifValidateCNName = true if @ifValidateCNName.nil?
-      @ifValidateRemoteCert = ini["acpsdk"]["acpsdk.ifValidateRemoteCert"]
+      @ifValidateRemoteCert = acpsdk['acpsdk.ifValidateRemoteCert']
       @ifValidateRemoteCert = false if @ifValidateRemoteCert.nil?
 
-      @signCertPath = ini["acpsdk"]["acpsdk.signCert.path"]
-      @signCertPwd = ini["acpsdk"]["acpsdk.signCert.pwd"]
-      @signCertPwd = @signCertPwd.to_s if !@signCertPwd.nil?
+      @signCertPath = acpsdk['acpsdk.signCert.path']
+      @signCertPwd = acpsdk['acpsdk.signCert.pwd']
+      @signCertPwd = @signCertPwd.to_s unless @signCertPwd.nil?
 
-      @validateCertDir = ini["acpsdk"]["acpsdk.validateCert.dir"]
-      @encryptCertPath = ini["acpsdk"]["acpsdk.encryptCert.path"]
-      @rootCertPath = ini["acpsdk"]["acpsdk.rootCert.path"]
-      @middleCertPath = ini["acpsdk"]["acpsdk.middleCert.path"]
+      @validateCertDir = acpsdk['acpsdk.validateCert.dir']
+      @encryptCertPath = acpsdk['acpsdk.encryptCert.path']
+      @rootCertPath = acpsdk['acpsdk.rootCert.path']
+      @middleCertPath = acpsdk['acpsdk.middleCert.path']
 
-      @frontUrl = ini["acpsdk"]["acpsdk.frontUrl"]
-      @backUrl = ini["acpsdk"]["acpsdk.backUrl"]
+      @frontUrl = acpsdk['acpsdk.frontUrl']
+      @backUrl = acpsdk['acpsdk.backUrl']
 
-      @encoding = ini["acpsdk"]["acpsdk.encoding"]
-      @secureKey = ini["acpsdk"]["acpsdk.secureKey"]
-      @secureKey = @secureKey.to_s if !@secureKey.nil?
+      @encoding = acpsdk['acpsdk.encoding']
+      @secureKey = acpsdk['acpsdk.secureKey']
+      @secureKey = @secureKey.to_s unless @secureKey.nil?
 
-      @logFilePath = ini["acpsdk"]["acpsdk.log.file.path"]
-      @logLevel = ini["acpsdk"]["acpsdk.log.level"]
+      @logFilePath = acpsdk['acpsdk.log.file.path']
+      @logLevel = acpsdk['acpsdk.log.level']
 
       @encoding = 'UTF-8'
+    end
 
+    def parse_acpsdk
+      path = File.dirname(__FILE__)
+      @ini ||= IniParse.parse(File.read("#{path}/acp_sdk.ini").force_encoding('UTF-8'))
     end
   end
 end
-
-
-
