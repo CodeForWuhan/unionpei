@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.version     = UnionPei::VERSION
   s.summary     = 'An unofficial unionpay gem'
   s.description = 'An unofficial unionpay gem'
-  s.authors     = ['Shuang']
+  s.authors     = ['memorycancel', 'tianlu1677']
   s.email       = 'memorycancel@gmail.com'
   s.files = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
