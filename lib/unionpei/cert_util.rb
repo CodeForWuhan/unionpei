@@ -10,10 +10,6 @@ module UnionPei
 
   class Cert
     attr_accessor :cert, :certId, :key
-
-    @certId
-    @key
-    @cert
   end
 
   class CertUtil
