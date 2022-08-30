@@ -2,6 +2,7 @@
 
 require 'iniparse'
 require 'singleton'
+require_relative 'configuration'
 
 module UnionPei
   class SDKConfig
@@ -68,8 +69,8 @@ module UnionPei
     end
 
     def parse_acpsdk
-      path = File.dirname(__FILE__)
-      @ini ||= IniParse.parse(File.read("#{path}/acp_sdk.ini").force_encoding('UTF-8'))
+      acp_sdk_config_path = UnionPei.configuration.acp_sdk_config_path
+      @ini ||= IniParse.parse(File.read(acp_sdk_config_path).force_encoding('UTF-8'))
     end
   end
 end
