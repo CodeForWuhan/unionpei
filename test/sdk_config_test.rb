@@ -3,11 +3,18 @@
 require 'test_helper'
 
 class SDKConfigTest < Minitest::Test
-  def setup
-    @config = UnionPei::SDKConfig.instance
+  def setup; end
+
+  def test_init_config
+    UnionPei.configure do |config|
+      config.acp_sdk_config_path = 'abc'
+    end
+
+    assert UnionPei.configuration.acp_sdk_config_path.split('/').last == 'abc'
   end
 
   def test_config_value
+    @config = UnionPei::SDKConfig.instance
     assert @config.appTransUrl == 'https://gateway.test.95516.com/gateway/api/appTransReq.do'
     assert @config.backTransUrl == 'https://gateway.test.95516.com/gateway/api/backTransReq.do'
     assert @config.backUrl == 'http://222.222.222.222:8080/backRcvResponse'

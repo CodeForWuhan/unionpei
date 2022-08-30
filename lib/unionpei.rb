@@ -1,14 +1,5 @@
 # frozen_string_literal: true
 
-require 'unionpei/version'
-require 'unionpei/sdk_config'
-require 'unionpei/configuration'
-require 'unionpei/log_util'
-require 'unionpei/cert_util'
-require 'unionpei/sdk_util'
-require 'unionpei/acp_service'
-require 'unionpei/payment'
-
 module UnionPei
   class Error < StandardError; end
 
@@ -24,3 +15,12 @@ module UnionPei
     end
   end
 end
+
+require 'unionpei/configuration'
+require 'unionpei/version'
+require 'unionpei/sdk_config'
+require 'unionpei/log_util'
+require 'unionpei/cert_util'
+require 'unionpei/sdk_util'
+require 'unionpei/acp_service'
+require 'unionpei/payment'
