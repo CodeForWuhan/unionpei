@@ -16,7 +16,6 @@ module UnionPei
     def initialize
       ini = parse_acpsdk
       acpsdk = ini['acpsdk']
-
       @frontTransUrl = acpsdk['acpsdk.frontTransUrl']
       @singleQueryUrl = acpsdk['acpsdk.singleQueryUrl']
       @backTransUrl = acpsdk['acpsdk.backTransUrl']
@@ -68,8 +67,8 @@ module UnionPei
     end
 
     def parse_acpsdk
-      path = File.dirname(__FILE__)
-      @ini ||= IniParse.parse(File.read("#{path}/acp_sdk.ini").force_encoding('UTF-8'))
+      acp_sdk_config_path = ::UnionPei.configuration.acp_sdk_config_path
+      IniParse.parse(File.read(acp_sdk_config_path).force_encoding('UTF-8'))
     end
   end
 end
