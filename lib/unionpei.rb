@@ -3,9 +3,7 @@
 module UnionPei
   class Error < StandardError; end
 
-  class << self
-    attr_accessor :configuration
-
+  class << self  
     def configuration
       @configuration ||= Configuration.new
     end

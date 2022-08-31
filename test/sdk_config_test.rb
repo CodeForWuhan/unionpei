@@ -6,11 +6,7 @@ class SDKConfigTest < Minitest::Test
   def setup; end
 
   def test_init_config
-    UnionPei.configure do |config|
-      config.acp_sdk_config_path = 'abc'
-    end
-
-    assert UnionPei.configuration.acp_sdk_config_path.split('/').last == 'abc'
+    assert UnionPei.configuration.acp_sdk_config_path.include?('lib/unionpei/acp_sdk.ini')
   end
 
   def test_config_value
