@@ -1,18 +1,12 @@
 UnionPei - 非官方银联支付（UnionPay）SDK
--------- 
 
-# Install
 
-```ruby
+1. 安装
 gem 'unionpei'
 
-```
+2. 快速开始（rails）
+2.1 指定读取设定的配置文件
 
-# 快速开始（rails）
-
-## 指定读取设定的配置文件
-
-```ruby
 # config/initializers/unionpei.rb
 UnionPei.configure do |config|
   if Rails.env.production?
@@ -20,11 +14,8 @@ UnionPei.configure do |config|
   end
 end
 
-```
-
-## 生成支付的页面
-```ruby
-# 参数可参考相关文档,或者源码中payment.rb
+2.2 生成支付的页面
+参数可参考相关文档,或者源码中payment.rb
 
 class PaymentsController < ApplicationController
   
@@ -45,9 +36,9 @@ class PaymentsController < ApplicationController
     UnionPei::Payment.query_trans({})
   end
 end
-```
 
-# 参考文档
+
+3. 参考文档
 
 - 银联测试参数：https://open.unionpay.com/tjweb/user/mchTest/param
 - 测试说明：https://open.unionpay.com/tjweb/support/faq/mchlist?id=516
@@ -57,11 +48,8 @@ end
 - 测试卡信息：https://open.unionpay.com/tjweb/support/faq/mchlist?id=4
 - B2B：https://open.unionpay.com/tjweb/acproduct/list?apiSvcId=452&index=999
 
-# 免责声明
+4. 免责声明
 
 本Gem对以下非官方代码进行封装和改造：
-
 https://open.unionpay.com/tjweb/support/faq/mchlist?id=38
-
 代码仅供参考学习，生产环境请自行封装代码。
-
